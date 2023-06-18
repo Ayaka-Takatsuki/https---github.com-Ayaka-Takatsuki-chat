@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chatアプリ</title>
+</head>
+
+<body>
+
+    <!-- コンテンツ表示画面 -->
+    <div>
+        <div>
+            名前: <input type="text" id="uname">
+        </div>
+        <div>
+            <textarea name="" id="text" cols="30" rows="10"></textarea>
+            <button id="send">送信</button>
+        </div>
+        <div id="output"> </div>
+        <style>
+            #output {
+                height: 300px;
+                overflow: auto;
+            }
+        </style>
+    </div>
+
+
+    <!--/ コンテンツ表示画面 -->
+
+
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- JQuery -->
+
+
+    <!--** 以下Firebase **-->
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved }
+            from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "fir-demo-2a82d.firebaseapp.com",
+            projectId: "fir-demo-2a82d",
+            storageBucket: "fir-demo-2a82d.appspot.com",
+            messagingSenderId: "1078617393378",
+            appId: "1:1078617393378:web:f6314ada6d0384f94776bb"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Realtime DBに接続する
+        const db = getDatabase(app);
+        const dbRef = ref(db, "chat");
+
+        //　送信ボタンが押されたら、データをDBに送信
+        $("#send").on("click", function () {
+            //　保存したいデータのオブジェクトを作成
+            const msg = {
+                uname: $("#uname").val(),
+                text: $("#text").val()
+            };
+            console.log(msg)
+
+            // 新規のデータを送れる状態にセット＝新しいIDをRealtime Databaseの中に作る
+            const newPostRef = push(dbRef);
+
+            //　DBに値を送信＝↑で作った新しいIDに新規のデータを送信
+            set(newPostRef, msg);
+
+        });
+
+        //ここから下よくわかんない
+        onChildAdded(dbRef, function (data) {
+            const msg = data.val();
+            const key = data.key;
+            const h = `<p id="${key}" class = "message">${msg.uname}: ${msg.text}</p>`;
+
+            //バックタグ何に使うんだっけ　`
+            //バッククオート＝テンプレートリテラルは、式を埋め込むことができる文字列リテラル。
+            //バッククォートで囲まれた文字列中の${...}の中に埋め込まれた式は評価された文字列値で置き換えられる。
+            $("#output").append(h);
+        });
+
+        $('#output').on('click', '.message', function () {
+            $(this).val();
+            // 1. Get the ID (Firebase key) of the clicked <p> tag
+            const key = $(this).attr('id');
+
+            // 2. Specify the reference to the chat item you want to delete
+            const chatRef = ref(db, "chat/" + key);
+
+            // 3. Remove the data from Firebase
+            remove(chatRef);
+        });
+
+        onChildRemoved(dbRef, function (data) {
+            const key = data.key;
+            $("#" + key).remove(); // Remove the corresponding HTML element
+        });
+
+
+         // ライン風アプリ
+         ///削除方法　onchilderemoveのオブジェクト使いそう。あとキーを使う
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

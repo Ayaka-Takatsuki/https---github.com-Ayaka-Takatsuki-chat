@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object演習</title>
+</head>
+<body>
+<script>
+// オブジェクトの中身を取得してみる
+const post = {
+    title: "投稿タイトル",
+    text: "本文",
+    user: {
+        name: "ジーズ太郎",
+        email: "gstaro@example.com"
+    }
+};
+
+//復習
+const object = {
+    title: "投稿タイトル",
+    text: "本文",
+    user: {
+        name: "高槻",
+        email: "ayaka.takatsuki@gmail.com"
+    }
+};
+console.log(object);
+
+
+
+
+
+console.log(post.title)//postの中の”投稿タイトル”の文字を取り出したい
+console.log(post.user.name)//postの中の、userの中の”ジーズ太郎”の文字(nameのプロパティ)を取り出したい
+
+const user = {
+    name: '高槻',
+    age: 27,
+    sex: '女',
+}
+user.birth = 8 //userのなかにbirthの要素を追加したい
+
+console.log(user);
+
+
+</script>
+</body>
+</html>
